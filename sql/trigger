@@ -1,0 +1,17 @@
+CREATE OR REPLACE FUNCTION update_album_duration()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE Albums
+    SET total_duration = (
+        SELECT COALESCE(SUM(duration), INTERVAL '0')
+        FROM Tracks
+        WHERE album_id = COALESCE(NEW.album_id, OLD.album_id)
+    )
+    WHERE album_id = COALESCE(NEW.album_id, OLD.album_id);
+    RETURN COALESCE(NEW, OLD);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_update_album_duration
+AFTER INSERT OR UPDATE OR DELETE ON Tracks
+FOR EACH ROW EXECUTE FUNCTION update_album_duration();
