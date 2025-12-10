@@ -1,4 +1,3 @@
--- Таблица исполнителей
 CREATE TABLE Artists (
     artist_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE CHECK (LENGTH(name) > 2),
@@ -7,13 +6,11 @@ CREATE TABLE Artists (
     disbanded_year INTEGER CHECK (disbanded_year IS NULL OR disbanded_year > formed_year)
 );
 
--- Таблица жанров
 CREATE TABLE Genres (
     genre_id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE CHECK (name ~ '^[A-Za-z ]+$')
 );
 
--- Таблица лейблов
 CREATE TABLE Labels (
     label_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
@@ -21,7 +18,6 @@ CREATE TABLE Labels (
     founded_year INTEGER CHECK (founded_year > 1900)
 );
 
--- Таблица альбомов
 CREATE TABLE Albums (
     album_id SERIAL PRIMARY KEY,
     title VARCHAR(200) NOT NULL CHECK (LENGTH(title) > 0),
@@ -31,7 +27,6 @@ CREATE TABLE Albums (
     total_duration INTERVAL DEFAULT '0' -- Вычисляется триггером
 );
 
--- Таблица треков
 CREATE TABLE Tracks (
     track_id SERIAL PRIMARY KEY,
     title VARCHAR(200) NOT NULL CHECK (LENGTH(title) > 0),
@@ -40,14 +35,12 @@ CREATE TABLE Tracks (
     artist_id INTEGER REFERENCES Artists(artist_id) ON DELETE SET NULL
 );
 
--- Связь многие-ко-многим: исполнители и жанры
 CREATE TABLE Artist_Genres (
     artist_id INTEGER NOT NULL REFERENCES Artists(artist_id) ON DELETE CASCADE,
     genre_id INTEGER NOT NULL REFERENCES Genres(genre_id) ON DELETE CASCADE,
     PRIMARY KEY (artist_id, genre_id)
 );
 
--- Связь многие-ко-многим: треки и жанры
 CREATE TABLE Track_Genres (
     track_id INTEGER NOT NULL REFERENCES Tracks(track_id) ON DELETE CASCADE,
     genre_id INTEGER NOT NULL REFERENCES Genres(genre_id) ON DELETE CASCADE,

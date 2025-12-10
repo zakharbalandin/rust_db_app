@@ -5,10 +5,7 @@ DECLARE
     total_tracks BIGINT;
     genre_tracks BIGINT;
 BEGIN
-    -- Общее количество треков
     SELECT COUNT(*) INTO total_tracks FROM Tracks;
-    
-    -- Количество треков в жанре
     SELECT COUNT(*) INTO genre_tracks
     FROM Track_Genres tg
     JOIN Genres g ON tg.genre_id = g.genre_id
